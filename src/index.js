@@ -27,7 +27,6 @@ function handleSubmit(e){
     image: e.target.image.value,
     likes: 0
   }
-  renderToy(objToy)
   addToy(objToy)
 }
 
@@ -58,13 +57,9 @@ function handleSubmit(e){
     cardContainer.appendChild(card)
     //add likes to the card when like button is clicked
     btn.addEventListener('click',() => {
-      let likeNumber = parseInt(p.textContent.slice(0, 1))
-      let newLikeNumber = likeNumber + 1
-      p.textContent = `${newLikeNumber} Likes`
-      const likeObj = {
-        likes: newLikeNumber
-      }
-      editToy(btn.id, likeObj)
+      toy.likes = toy.likes + 1
+      p.textContent = `${toy.likes} Likes`
+      editToy(toy)
     })
   }
 
@@ -86,20 +81,20 @@ function handleSubmit(e){
       body: JSON.stringify(objToy)
     })
       .then(res => res.json())
-      .then(toy => console.log(toy))
+      .then(toy => renderToy(toy))
   }
 
-  function editToy(toyId, newNumberOfLikes){
-    fetch(`http://localhost:3000/toys/${toyId}`, {
+  function editToy(toyObj){
+    fetch(`http://localhost:3000/toys/${toyObj.id}`, {
       method: 'PATCH',
       headers:{
         "Content-Type": "application/json",
         Accept: "application/json"
       },
-      body:JSON.stringify(newNumberOfLikes)
+      body:JSON.stringify(toyObj)
     })
     .then((res)=>res.json())
-    .then(data => console.log('data', data))
+    .then(data => console.log('data from editToy function', data))
   }
 
   //initializ Render
